@@ -13,7 +13,8 @@ A Retrieval-Augmented Generation (RAG) chatbot trained on Angel One support docu
 
 ## Live Demo
 
-[Add your deployed application URL here]
+The application is now live on Streamlit Cloud! You can access it at:
+[https://rag-cb.streamlit.app/](https://rag-cb.streamlit.app/)
 
 ## Prerequisites
 
@@ -67,47 +68,30 @@ streamlit run app.py
 
 2. Open your web browser and navigate to the URL shown in the terminal (typically http://localhost:8501)
 
-## Deployment Options
+## Deployment on Streamlit Cloud
 
-### 1. Deploy on Streamlit Cloud (Recommended)
+The application is deployed on Streamlit Cloud. Here's how to set up your own deployment:
 
 1. Push your code to a GitHub repository
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. Sign in with your GitHub account
 4. Click "New app"
 5. Select your repository, branch, and main file (app.py)
-6. Add your environment variables (OPENAI_API_KEY)
+6. Set up your secrets:
+   - Go to your app's settings
+   - Click on "Secrets"
+   - Add your OpenAI API key in the following format:
+     ```toml
+     OPENAI_API_KEY = "your-api-key-here"
+     ```
 7. Click "Deploy"
 
-### 2. Deploy on Heroku
+### Important Notes for Deployment
 
-1. Create a `Procfile`:
-
-```
-web: streamlit run app.py
-```
-
-2. Create a `runtime.txt`:
-
-```
-python-3.9.16
-```
-
-3. Install the Heroku CLI and deploy:
-
-```bash
-heroku create your-app-name
-git push heroku main
-heroku config:set OPENAI_API_KEY=your-api-key
-```
-
-### 3. Deploy on AWS
-
-1. Create an EC2 instance
-2. Install required packages
-3. Set up environment variables
-4. Use screen or systemd to run the application
-5. Configure security groups for port 8501
+- The OpenAI API key is stored securely in Streamlit's secrets management system
+- Make sure your repository is public or you have a Streamlit Teams account
+- The app will automatically redeploy when you push changes to your repository
+- You can monitor your app's performance and usage in the Streamlit Cloud dashboard
 
 ## Project Structure
 
