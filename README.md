@@ -28,7 +28,7 @@ The application is now live on Streamlit Cloud! You can access it at:
 
 ```bash
 git clone <repository-url>
-cd RAG
+cd RAG-CB
 ```
 
 2. Create a virtual environment and activate it:
