@@ -1,4 +1,4 @@
-# Angel One Support Chatbot
+# RAG Support Chatbot
 
 A Retrieval-Augmented Generation (RAG) chatbot trained on Angel One support documentation to assist users with their queries.
 
