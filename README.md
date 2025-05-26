@@ -16,6 +16,12 @@ A Retrieval-Augmented Generation (RAG) chatbot trained on Angel One support docu
 The application is now live on Streamlit Cloud! You can access it at:
 [https://rag-cb.streamlit.app/](https://rag-cb.streamlit.app/)
 
+### Screenshot
+
+![RAG Support Chatbot Interface](assets/app-screenshot.png)
+
+_The chatbot interface showing a conversation with the AI assistant_
+
 ## Prerequisites
 
 - Python 3.8 or higher
