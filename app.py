@@ -1,4 +1,4 @@
-import streamlit as st
+import gradio as gr
 import os
 from dotenv import load_dotenv
 from langchain_community.document_loaders import WebBaseLoader, PyPDFLoader
@@ -14,13 +14,8 @@ import tempfile
 # Load our environment variables (API keys, etc.)
 load_dotenv()
 
-# Keep track of our chat state
-if "conversation" not in st.session_state:
-    st.session_state.conversation = None
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-if "input_key" not in st.session_state:
-    st.session_state.input_key = 0
+# Global vectorstore
+vectorstore = None
 
 def scrape_angel_one_support():
     """Grab all the support content from Angel One's website"""
@@ -51,6 +46,8 @@ def load_pdf_documents(pdf_files):
 
 def initialize_rag():
     """Set up our RAG system with all the necessary components"""
+    global vectorstore
+    
     # Where we'll store our vector database
     persist_directory = "chroma_db"
     if not os.path.exists(persist_directory):
@@ -84,100 +81,80 @@ def initialize_rag():
         persist_directory=persist_directory
     )
     
-    # Set up our conversation memory
+    return vectorstore
+
+def create_conversation_chain():
+    """Create a new conversation chain with the vectorstore"""
+    global vectorstore
+    
     memory = ConversationBufferMemory(
         memory_key="chat_history",
         return_messages=True,
         output_key="answer"
     )
     
-    # Create our main conversation chain
-    conversation = ConversationalRetrievalChain.from_llm(
+    return ConversationalRetrievalChain.from_llm(
         llm=ChatOpenAI(temperature=0),
         retriever=vectorstore.as_retriever(),
         memory=memory,
-        return_source_documents=False  # We don't need to show sources to the user
+        return_source_documents=False
     )
-    
-    return conversation
 
-def display_message(role, message):
-    """Make our chat messages look nice with different styles for user and bot"""
-    if role == "You":
-        st.markdown(f"""
-        <div style='display: flex; justify-content: flex-end; margin: 10px 0;'>
-            <div style='background-color: #007AFF; color: white; padding: 10px 15px; border-radius: 15px; max-width: 70%;'>
-                {message}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div style='display: flex; justify-content: flex-start; margin: 10px 0;'>
-            <div style='background-color: #E9ECEF; color: black; padding: 10px 15px; border-radius: 15px; max-width: 70%;'>
-                {message}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+def respond(message, chat_history):
+    """Handle the chat response"""
+    try:
+        # Create a new conversation chain for each interaction
+        conversation = create_conversation_chain()
+        response = conversation.invoke({"question": message})
+        
+        # Convert messages to Gradio format
+        chat_history.append({"role": "user", "content": message})
+        chat_history.append({"role": "assistant", "content": response["answer"]})
+        
+        return "", chat_history
+    except Exception as e:
+        error_message = f"Sorry, I ran into a problem: {str(e)}"
+        chat_history.append({"role": "user", "content": message})
+        chat_history.append({"role": "assistant", "content": error_message})
+        return "", chat_history
 
-def main():
-    st.title("Angel One Support Chatbot")
+def create_interface():
+    """Create the Gradio interface"""
+    # Initialize RAG system
+    initialize_rag()
     
-    # Set up our chatbot if it's not already running
-    if st.session_state.conversation is None:
-        with st.spinner("Getting everything ready..."):
-            try:
-                st.session_state.conversation = initialize_rag()
-            except Exception as e:
-                st.error(f"Oops! Something went wrong: {str(e)}")
-                st.stop()
-    
-    # Create our chat display area
-    chat_container = st.container()
-    
-    # Create our input area at the bottom
-    input_container = st.container()
-    
-    # Show all our previous messages
-    with chat_container:
-        for role, message in st.session_state.chat_history:
-            display_message(role, message)
-    
-    # Add some breathing room between chat and input
-    st.markdown("<br>" * 2, unsafe_allow_html=True)
-    
-    # Set up our input area with a text box and send button
-    with input_container:
-        col1, col2 = st.columns([6, 1])
-        with col1:
-            user_question = st.text_input(
-                "Ask a question about Angel One support:",
-                key=f"user_input_{st.session_state.input_key}",
-                label_visibility="collapsed"
+    # Create the chat interface
+    with gr.Blocks(title="Angel One Support Chatbot") as demo:
+        gr.Markdown("# Angel One Support Chatbot")
+        
+        # Chat history
+        chatbot = gr.Chatbot(height=600, type="messages")
+        
+        # Message input
+        with gr.Row():
+            msg = gr.Textbox(
+                placeholder="Ask a question about Angel One support...",
+                show_label=False,
+                container=False
             )
-        with col2:
-            send_button = st.button("Send", use_container_width=True)
+            submit = gr.Button("Send")
+        
+        # Handle submit
+        submit.click(
+            respond,
+            inputs=[msg, chatbot],
+            outputs=[msg, chatbot]
+        )
+        
+        # Handle enter key
+        msg.submit(
+            respond,
+            inputs=[msg, chatbot],
+            outputs=[msg, chatbot]
+        )
     
-    # Handle when the user asks a question
-    if user_question and (send_button or user_question):
-        with st.spinner("Thinking..."):
-            try:
-                # Get the bot's response
-                response = st.session_state.conversation.invoke({"question": user_question})
-                
-                # Add the conversation to our history
-                st.session_state.chat_history.append(("You", user_question))
-                st.session_state.chat_history.append(("Bot", response["answer"]))
-                
-                # Clear the input box for the next question
-                st.session_state.input_key += 1
-                
-                # Refresh the display
-                st.rerun()
-                
-            except Exception as e:
-                st.error(f"Something went wrong: {str(e)}")
-                st.session_state.chat_history.append(("Bot", "Sorry, I ran into a problem. Could you try asking that again?"))
+    return demo
 
 if __name__ == "__main__":
-    main() 
+    demo = create_interface()
+    demo.launch() 

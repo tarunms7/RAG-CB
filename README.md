@@ -1,111 +1,93 @@
-# RAG Support Chatbot
+# Angel One Support Chatbot
 
-A Retrieval-Augmented Generation (RAG) chatbot trained on Angel One support documentation to assist users with their queries.
+A RAG (Retrieval Augmented Generation) based chatbot that provides support information about Angel One's services. The chatbot uses LangChain, OpenAI, and Gradio to create an interactive interface for users to get answers about Angel One's support documentation.
 
 ## Features
 
-- Answers questions based on Angel One support documentation
-- Responds with "I don't know" for questions outside the knowledge base
-- User-friendly web interface
-- Support for both web content and PDF documents
-- Persistent chat history
-- Modern, responsive UI
-
-## Live Demo
-
-The application is now live on Streamlit Cloud! You can access it at:
-[https://rag-cb.streamlit.app/](https://rag-cb.streamlit.app/)
-
-### Screenshot
-
-![RAG Support Chatbot Interface](assets/app-screenshot.png)
-
-_The chatbot interface showing a conversation with the AI assistant_
+- Web scraping of Angel One's support documentation
+- PDF document processing
+- Vector-based semantic search
+- Interactive chat interface
+- Memory-aware conversations
+- Real-time responses
 
 ## Prerequisites
 
 - Python 3.8 or higher
 - OpenAI API key
-- Git
+- Internet connection for web scraping
 
-## Local Setup
+## Installation
 
-1. Clone this repository:
+1. Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd RAG-CB
+git clone <your-repo-url>
+cd <your-repo-name>
 ```
 
-2. Create a virtual environment and activate it:
+2. Create a virtual environment (recommended):
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. Install the required packages:
+3. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the project root and add your OpenAI API key:
+4. Create a `.env` file in the root directory and add your OpenAI API key:
 
-```bash
-cp .env.example .env
-# Edit .env with your OpenAI API key
+```
+OPENAI_API_KEY=your-api-key-here
 ```
 
-5. Create a `pdfs` directory and add any PDF documents you want to include in the knowledge base:
+## Usage
+
+1. Run the application:
 
 ```bash
-mkdir pdfs
-# Add your PDF files to the pdfs directory
+python app.py
 ```
 
-## Running the Application Locally
+2. Open your web browser and navigate to the URL shown in the terminal (usually http://127.0.0.1:7860)
 
-1. Start the Streamlit application:
-
-```bash
-streamlit run app.py
-```
-
-2. Open your web browser and navigate to the URL shown in the terminal (typically http://localhost:8501)
-
-## Deployment on Streamlit Cloud
-
-The application is deployed on Streamlit Cloud. Here's how to set up your own deployment:
-
-1. Push your code to a GitHub repository
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Sign in with your GitHub account
-4. Click "New app"
-5. Select your repository, branch, and main file (app.py)
-6. Set up your secrets:
-   - Go to your app's settings
-   - Click on "Secrets"
-   - Add your OpenAI API key in the following format:
-     ```toml
-     OPENAI_API_KEY = "your-api-key-here"
-     ```
-7. Click "Deploy"
-
-### Important Notes for Deployment
-
-- The OpenAI API key is stored securely in Streamlit's secrets management system
-- Make sure your repository is public or you have a Streamlit Teams account
-- The app will automatically redeploy when you push changes to your repository
-- You can monitor your app's performance and usage in the Streamlit Cloud dashboard
+3. Start chatting with the bot about Angel One's services
 
 ## Project Structure
 
-- `app.py`: Main application file containing the Streamlit interface and RAG implementation
-- `requirements.txt`: List of Python dependencies
-- `pdfs/`: Directory containing PDF documents for the knowledge base
-- `.env`: Environment variables file (create this file with your OpenAI API key)
-- `chroma_db/`: Directory for the vector database (created automatically)
+```
+.
+├── app.py              # Main application file
+├── requirements.txt    # Python dependencies
+├── .env               # Environment variables (not tracked in git)
+├── chroma_db/         # Vector database storage
+└── pdfs/             # Directory for PDF documents (optional)
+```
+
+## Deployment
+
+The application can be deployed on various platforms:
+
+1. **Hugging Face Spaces** (Recommended)
+
+   - Free hosting
+   - Easy deployment
+   - Built-in support for Gradio
+
+2. **PythonAnywhere**
+
+   - Free tier available
+   - Good for Python applications
+   - Easy setup
+
+3. **Render**
+   - Free tier available
+   - Good performance
+   - Easy deployment
 
 ## Contributing
 
@@ -116,11 +98,11 @@ The application is deployed on Streamlit Cloud. Here's how to set up your own de
 
 ## License
 
-[Add your chosen license here]
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
-- Angel One for their support documentation
-- OpenAI for their language models
-- Streamlit for the web framework
-- LangChain for the RAG implementation
+- LangChain for the RAG framework
+- OpenAI for the language model
+- Gradio for the web interface
+- Angel One for the support documentation
