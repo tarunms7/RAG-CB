@@ -1,3 +1,5 @@
 assets/*.png filter=lfs diff=lfs merge=lfs -text
 pdfs/*.pdf filter=lfs diff=lfs merge=lfs -text
 assets/app-screenshot.png filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
