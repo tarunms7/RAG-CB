@@ -1,3 +1,14 @@
+---
+title: Angel One Support Chatbot
+emoji: 🤖
+colorFrom: blue
+colorTo: indigo
+sdk: gradio
+sdk_version: 4.19.2
+app_file: app.py
+pinned: false
+---
+
 # Angel One Support Chatbot
 
 A RAG (Retrieval Augmented Generation) based chatbot that provides support information about Angel One's services. The chatbot uses LangChain, OpenAI, and Gradio to create an interactive interface for users to get answers about Angel One's support documentation.
