@@ -7,6 +7,7 @@ sdk: gradio
 sdk_version: 4.19.2
 app_file: app.py
 pinned: false
+python_version: "3.11.12"
 ---
 
 # Angel One Support Chatbot
