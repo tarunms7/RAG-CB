@@ -49,9 +49,8 @@ def initialize_rag():
     global vectorstore
     
     # Where we'll store our vector database
-    persist_directory = "chroma_db"
-    if not os.path.exists(persist_directory):
-        os.makedirs(persist_directory)
+    persist_directory = "/mnt/data/chroma_db"
+    os.makedirs(persist_directory, exist_ok=True)
     
     # Start collecting all our documents
     documents = []
