@@ -1,5 +1,5 @@
 gradio==5.31.0
-langchain==0.1.2
+langchain>=0.1.0,<0.2.0
 langchain-community==0.0.38
 langchain-openai==0.0.8
 openai==1.82.0
